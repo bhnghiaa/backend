@@ -63,7 +63,7 @@ module.exports = {
 
     getAllHotels: async (req, res, next) => {
         try {
-            const hotels = await Hotel.find({}, '_id review rating imageUrl title country_id location');
+            const hotels = await Hotel.find({}, '_id review imageUrl title country_id location');
 
             if (hotels.length === 0) {
                 return res.status(200).json([]);
