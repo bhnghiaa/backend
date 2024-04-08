@@ -35,7 +35,7 @@ module.exports = {
 
             await newHotel.save();
 
-            res.status(201).json({status: true})
+            res.status(201).json({ status: true })
         } catch (error) {
             return next(error)
         }
@@ -48,39 +48,53 @@ module.exports = {
         const limit = parseInt(limitParam)
 
         try {
-            const hotels = await Hotel.find({country_id: countryId }, '_id review rating imageUrl title country_id location')
-            .limit(limit)
+            const hotels = await Hotel.find({ country_id: countryId }, '_id review rating imageUrl title country_id location')
+                .limit(limit)
 
-            if(hotels.length === 0){
+            if (hotels.length === 0) {
                 return res.status(200).json([]);
             }
 
-            res.status(200).json({hotels})
+            res.status(200).json({ hotels })
         } catch (error) {
-           return next(error) 
+            return next(error)
         }
     },
 
-    getHotelById: async (req, res, next)=> {
+    getAllHotels: async (req, res, next) => {
+        try {
+            const hotels = await Hotel.find({}, '_id review rating imageUrl title country_id location');
+
+            if (hotels.length === 0) {
+                return res.status(200).json([]);
+            }
+
+            res.status(200).json({ hotels });
+        } catch (error) {
+            return next(error);
+        }
+    },
+
+    getHotelById: async (req, res, next) => {
         const hotelId = req.params.id
-        
+
 
         try {
             const hotel = await Hotel.findById(hotelId)
-            .populate({
-                path: 'reviews',
-                options: { sort: { updatedAt: -1 }, limit: 2 },
-                select: 'rating review updatedAt user',
-                
-                populate: {
-                    path: 'user',
-                    model: 'User',
-                    select: 'username profile'
-                }
-            })
+                .populate({
+                    path: 'reviews',
+                    options: { sort: { updatedAt: -1 }, limit: 2 },
+                    select: 'rating review updatedAt user',
 
-            if(!hotel){
-                return res.status(404).json({status: false, message: "Hotel does not exist"})
+                    populate: {
+                        path: 'user',
+                        model: 'User',
+                        select: 'username profile'
+                    }
+                })
+
+            if (!hotel) {
+                return res.status(404).json({ status: false, message: "Hotel does not exist" })
             }
 
             res.status(200).json(hotel)
@@ -89,28 +103,28 @@ module.exports = {
         }
     },
 
-    search: async (req, res, next) =>{
+    search: async (req, res, next) => {
         try {
-         const results = await Hotel.aggregate(
-             [
-                 {
-                   $search: {
-                     index: "hotels",
-                     text: {
-                       query: req.params.key,
-                       path: {
-                         wildcard: "*"
-                       }
-                     }
-                   }
-                 }
-               ]
-         )
-         res.status(200).json(results)
+            const results = await Hotel.aggregate(
+                [
+                    {
+                        $search: {
+                            index: "hotels",
+                            text: {
+                                query: req.params.key,
+                                path: {
+                                    wildcard: "*"
+                                }
+                            }
+                        }
+                    }
+                ]
+            )
+            res.status(200).json(results)
         } catch (error) {
-         return next(error)
+            return next(error)
         }
-     },
+    },
 
-    
+
 }
