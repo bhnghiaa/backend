@@ -4,7 +4,7 @@ const UserSchema = new mongoose.Schema({
     username: { type: String, require: true },
     email: { type: String, require: true, unique: true },
     password: { type: String, require: true },
-    profile: { type: String, default: "https://encrypted-tbn0.gstahttps://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScJXWdvwDZC0RF_VSzzP8aXSX9Sc_VPAtuew&usqp=CAUtic.com/images?q=tbn:ANd9GcScJXWdvwDZC0RF_VSzzP8aXSX9Sc_VPAtuew&usqp=CAU" },
+    profile: { type: String, default: "https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_640.png" },
 }, { timestamps: true });
 
 module.exports = mongoose.model("User", UserSchema);
