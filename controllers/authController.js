@@ -47,9 +47,8 @@ module.exports = {
             );
 
             const user_id = user._id;
-            const user_role = user.role;
 
-            res.status(200).json({ status: true })
+            res.status(200).json({ status: true, id: user_id, token: userToken, role: user.role })
         } catch (error) {
             return next(error)
         }
