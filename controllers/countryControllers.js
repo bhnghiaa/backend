@@ -78,19 +78,17 @@ module.exports = {
         }
     },
     editCountry: async (req, res, next) => {
-        const { countryId, description, imageUrl, region, popular } = req.body;
+        const { countryId, country, description, imageUrl, region } = req.body;
 
         try {
-            const updatedFields = {};
-            if (country) updatedFields.country = country;
-            if (description) updatedFields.description = description;
-            if (imageUrl) updatedFields.imageUrl = imageUrl;
-            if (region) updatedFields.region = region;
-            if (popular) updatedFields.popular = popular;
+            const updatedCountry = await Country.findByIdAndUpdate(countryId, {
+                country,
+                description,
+                imageUrl,
+                region
+            }, { new: true });
 
-            const country = await Country.findByIdAndUpdate(countryId, updatedFields, { new: true });
-
-            if (!country) {
+            if (!updatedCountry) {
                 return res.status(404).json({ message: "Country not found" });
             }
 
@@ -99,4 +97,5 @@ module.exports = {
             return next(error);
         }
     }
+
 }

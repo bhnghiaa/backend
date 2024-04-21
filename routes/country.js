@@ -6,5 +6,5 @@ router.post('/', verifyToken, countryController.addCountry)
 router.get('/', countryController.getCountries)
 router.get('/:id', countryController.getCountry)
 router.post('/places', countryController.addPlacesToCountry)
-router.put('/:id', verifyToken, countryController.editCountry);
+router.put('/:id', countryController.editCountry);
 module.exports = router;
