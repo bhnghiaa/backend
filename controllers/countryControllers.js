@@ -82,9 +82,8 @@ module.exports = {
 
         try {
             const country = await Country.findByIdAndUpdate(countryId, {
-                description,
+                country,
                 imageUrl,
-                region
             }, { new: true });
 
             if (!country) {
