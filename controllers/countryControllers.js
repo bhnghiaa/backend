@@ -78,7 +78,8 @@ module.exports = {
         }
     },
     editCountry: async (req, res, next) => {
-        const { countryId, country, description, imageUrl, region } = req.body;
+        const countryId = req.params.id;
+        const { country, description, imageUrl, region } = req.body;
 
         try {
             const updatedCountry = await Country.findByIdAndUpdate(countryId, {
