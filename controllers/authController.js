@@ -11,6 +11,7 @@ module.exports = {
             username: req.body.username,
             email: req.body.email,
             password: CryptoJS.AES.encrypt(req.body.password, process.env.SECRET).toString(),
+            role: req.body.role,
         });
 
         try {
@@ -23,31 +24,31 @@ module.exports = {
     },
 
 
-    loginUser: async (req, res, next)=> {
+    loginUser: async (req, res, next) => {
         try {
-            const user = await User.findOne({email: req.body.email});
+            const user = await User.findOne({ email: req.body.email });
 
-            if(!user){
-                return res.status(401).json({status: false, message: "User not found"});
+            if (!user) {
+                return res.status(401).json({ status: false, message: "User not found" });
             }
 
 
             const decryptedPassword = CryptoJS.AES.decrypt(user.password, process.env.SECRET);
             const decryptedString = decryptedPassword.toString(CryptoJS.enc.Utf8);
 
-            if(decryptedString !== req.body.password){
-                return res.status(401).json({status: false, message: "Wrong password"});
+            if (decryptedString !== req.body.password) {
+                return res.status(401).json({ status: false, message: "Wrong password" });
             }
 
             const userToken = jwt.sign(
                 {
-                    id: user._id
-                },process.env.JWT_SECRET, {expiresIn: "21d"}
+                    id: user._id, role: user.role
+                }, process.env.JWT_SECRET, { expiresIn: "21d" }
             );
 
             const user_id = user._id;
 
-            res.status(200).json({status: true, id: user_id, token: userToken})
+            res.status(200).json({ status: true, id: user_id, token: userToken, role: user.role })
         } catch (error) {
             return next(error)
         }

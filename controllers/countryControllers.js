@@ -24,28 +24,28 @@ module.exports = {
     },
 
     addPlacesToCountry: async (req, res, next) => {
-        const {countryId, placeId} = req.body;
+        const { countryId, placeId } = req.body;
 
         try {
             const country = await Country.findById(countryId);
 
-            if(!country){
-                return res.status(404).json({message: "Country not found"})
+            if (!country) {
+                return res.status(404).json({ message: "Country not found" })
             }
 
             const index = country.popular.indexOf(placeId);
 
-            if(index !== -1){
+            if (index !== -1) {
                 country.popular.splice(index, 1)
-            }else{
-               country.popular.push(placeId); 
+            } else {
+                country.popular.push(placeId);
             }
 
             await country.save();
 
-            res.status(200).json({status: true})
+            res.status(200).json({ status: true })
 
-            
+
         } catch (error) {
             return next(error)
         }
@@ -54,9 +54,9 @@ module.exports = {
 
     getCountries: async (req, res, next) => {
         try {
-            const countries = await Country.find({},{country: 1, _id: 1, imageUrl: 1} )
+            const countries = await Country.find({}, { country: 1, _id: 1, imageUrl: 1 })
 
-            res.status(200).json({countries})
+            res.status(200).json({ countries })
         } catch (error) {
             return next(error)
         }
@@ -66,18 +66,34 @@ module.exports = {
         const countryId = req.params.id;
 
         try {
-            const country = await Country.findById(countryId, {createdAt: 0, updatedAt: 0, __v: 0})
-            .populate({
-                path: 'popular',
-                select: 'title rating review imageUrl location'
-            });
+            const country = await Country.findById(countryId, { createdAt: 0, updatedAt: 0, __v: 0 })
+                .populate({
+                    path: 'popular',
+                    select: 'title rating review imageUrl location'
+                });
 
-        res.status(200).json(country)
+            res.status(200).json(country)
         } catch (error) {
-            return next(error) 
+            return next(error)
         }
     },
+    editCountry: async (req, res, next) => {
+        const { countryId, description, imageUrl, region } = req.body;
 
+        try {
+            const country = await Country.findByIdAndUpdate(countryId, {
+                description,
+                imageUrl,
+                region
+            }, { new: true });
 
-    
+            if (!country) {
+                return res.status(404).json({ message: "Country not found" });
+            }
+
+            res.status(200).json({ status: true });
+        } catch (error) {
+            return next(error);
+        }
+    }
 }
