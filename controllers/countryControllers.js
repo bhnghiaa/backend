@@ -81,10 +81,13 @@ module.exports = {
         const { countryId, description, imageUrl, region } = req.body;
 
         try {
-            const country = await Country.findByIdAndUpdate(countryId, {
-                country,
-                imageUrl,
-            }, { new: true });
+            const updatedFields = {};
+            if (country) updatedFields.country = country;
+            if (description) updatedFields.description = description;
+            if (imageUrl) updatedFields.imageUrl = imageUrl;
+            if (region) updatedFields.region = region;
+
+            const country = await Country.findByIdAndUpdate(countryId, updatedFields, { new: true });
 
             if (!country) {
                 return res.status(404).json({ message: "Country not found" });
