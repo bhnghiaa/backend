@@ -80,7 +80,6 @@ module.exports = {
     editCountry: async (req, res, next) => {
         const countryId = req.params.id;
         const { country, description, imageUrl, region } = req.body;
-
         try {
             const updatedCountry = await Country.findByIdAndUpdate(countryId, {
                 country,
@@ -97,6 +96,20 @@ module.exports = {
         } catch (error) {
             return next(error);
         }
-    }
+    },
+    deleteCountry: async (req, res, next) => {
+        const countryId = req.params.id;
 
+        try {
+            const deletedCountry = await Country.findByIdAndDelete(countryId);
+
+            if (!deletedCountry) {
+                return res.status(404).json({ message: "Country not found" });
+            }
+
+            res.status(200).json({ status: true });
+        } catch (error) {
+            return next(error);
+        }
+    }
 }
