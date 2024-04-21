@@ -78,7 +78,7 @@ module.exports = {
         }
     },
     editCountry: async (req, res, next) => {
-        const { countryId, description, imageUrl, region } = req.body;
+        const { countryId, description, imageUrl, region, popular } = req.body;
 
         try {
             const updatedFields = {};
@@ -86,6 +86,7 @@ module.exports = {
             if (description) updatedFields.description = description;
             if (imageUrl) updatedFields.imageUrl = imageUrl;
             if (region) updatedFields.region = region;
+            if (popular) updatedFields.popular = popular;
 
             const country = await Country.findByIdAndUpdate(countryId, updatedFields, { new: true });
 
