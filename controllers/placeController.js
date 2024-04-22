@@ -104,7 +104,13 @@ module.exports = {
             return next(error)
         }
     },
-
-
-
+    deletePlace: async (req, res, next) => {
+        try {
+            const place = await Place.findByIdAndDelete(req.params.id);
+            if (!place) return next(new Error('Place not found'));
+            res.status(200).json({ status: true });
+        } catch (error) {
+            return next(error);
+        }
+    },
 }

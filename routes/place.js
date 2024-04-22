@@ -7,6 +7,6 @@ router.get('/', placeController.getPlaces)
 router.get('/:id', placeController.getPlace)
 router.get('/byCountry/:id', placeController.getPlacesByCountry)
 router.get('/search/:key', placeController.search)
-
+router.delete('/:id', placeController.deletePlace);
 module.exports = router;
 
