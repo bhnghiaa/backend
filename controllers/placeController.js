@@ -113,4 +113,13 @@ module.exports = {
             return next(error);
         }
     },
+    editPlace: async (req, res, next) => {
+        try {
+            const updatedPlace = await Place.findByIdAndUpdate(req.params.id, req.body, { new: true });
+            if (!updatedPlace) return next(new Error('Place not found'));
+            res.status(200).json(updatedPlace);
+        } catch (error) {
+            return next(error);
+        }
+    },
 }
