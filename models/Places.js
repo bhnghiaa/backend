@@ -25,7 +25,7 @@ PlaceSchema.post('save', function (doc, next) {
 
     // update the popular field in the Country document
     Country.updateOne(
-        { _id: doc.countryId }, // assuming the Place document has a countryId field
+        { _id: doc.country_id }, // use doc.country_id instead of doc.countryId
         { $push: { popular: doc._id } },
         function (err) {
             if (err) {
@@ -37,6 +37,5 @@ PlaceSchema.post('save', function (doc, next) {
         }
     );
 });
-
 
 module.exports = mongoose.model("Place", PlaceSchema);
