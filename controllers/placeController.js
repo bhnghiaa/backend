@@ -6,24 +6,38 @@ module.exports = {
         const { country_id, description, imageUrl, location, title, rating, review, latitude, longitude, contact_id } = req.body;
 
         try {
+            // Kiểm tra xem country_id có tồn tại trong database không trước khi tạo Place mới
+            const countryExists = await Country.findById(country_id);
+            if (!countryExists) {
+                return res.status(404).json({ status: false, message: "Country not found" });
+            }
+
+            // Tạo một instance mới của Place với các thông tin được cung cấp
             const newPlace = new Place({
                 country_id,
                 description,
                 imageUrl,
                 location,
-                contact_id,
                 title,
                 rating,
                 review,
                 latitude,
-                longitude
-            })
+                longitude,
+                contact_id
+            });
 
+            // Lưu instance vào database
             await newPlace.save();
 
-            res.status(201).json({ status: true })
+            // Tùy chọn: Cập nhật mảng popular của Country nếu muốn
+            countryExists.popular.push(newPlace._id);
+            await countryExists.save();
+
+            // Trả về response thành công
+            res.status(201).json({ status: true, message: "Place added successfully", place: newPlace });
         } catch (error) {
-            return next(error)
+            // Gửi lỗi đến middleware xử lý lỗi tiếp theo
+            return next(error);
         }
     },
 

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const PlaceSchema = new mongoose.Schema({
-    country_id: { type: String, required: true },
+    country_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Country' },
     title: { type: String, required: true },
     description: { type: String, required: true },
     contact_id: { type: String, required: true },
