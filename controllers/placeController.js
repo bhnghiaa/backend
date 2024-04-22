@@ -1,31 +1,42 @@
 const Place = require("../models/Places");
-
+const Country = require('../models/Country');
 
 module.exports = {
     addPlaces: async (req, res, next) => {
-        const { country_id, description, imageUrl, location, title, rating, review, latitude, longitude, contact_id } = req.body;
+        const { countryName, description, imageUrl, location, title, rating, review, latitude, longitude, contact_id } = req.body;
 
         try {
-            const newPlace = new Place({
-                country_id,
-                description,
-                imageUrl,
-                location,
-                contact_id,
-                title,
-                rating,
-                review,
-                latitude,
-                longitude
-            })
+            // Find the country by name instead of ID
+            const relatedCountry = await Country.findOne({ country: countryName });
 
-            await newPlace.save();
+            if (relatedCountry) {
+                const newPlace = new Place({
+                    country_id: relatedCountry._id,  // Use the _id of the found country
+                    description,
+                    imageUrl,
+                    location,
+                    contact_id,
+                    title,
+                    rating,
+                    review,
+                    latitude,
+                    longitude
+                });
 
-            res.status(201).json({ status: true })
+                await newPlace.save();
+
+                // Add the new Place to the list of popular places of the found country
+                relatedCountry.popular.push(newPlace._id);
+                await relatedCountry.save();  // Save the updated country information
+                res.status(201).send({ message: "Place added successfully and country updated", place: newPlace });
+            } else {
+                res.status(404).send({ message: "Country not found" });
+            }
         } catch (error) {
-            return next(error)
+            return next(error);
         }
     },
+
 
     getPlaces: async (req, res, next) => {
         try {
