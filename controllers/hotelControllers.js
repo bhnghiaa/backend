@@ -6,11 +6,15 @@ module.exports = {
             country_id,
             title,
             description,
+            availability,
             contact,
             imageUrl,
             rating,
+            review,
             location,
+            coordinates,
             price,
+            facilities,
         } = req.body;
 
         try {
@@ -18,11 +22,15 @@ module.exports = {
                 country_id,
                 title,
                 description,
+                availability,
                 contact,
                 imageUrl,
                 rating,
+                review,
                 location,
+                coordinates,
                 price,
+                facilities,
             })
 
             await newHotel.save();
