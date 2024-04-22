@@ -7,7 +7,7 @@ const CountrySchema = new mongoose.Schema({
     region: { type: String, require: true },
     popular: [
         {
-            type: mongoose.Schema.Types.ObjectId,
+            type: String,
             ref: "Place",
         }
     ]
