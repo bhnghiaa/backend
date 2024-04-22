@@ -1,9 +1,9 @@
 const Hotel = require('../models/Hotel')
-
+import Country from '../models/Country'
 module.exports = {
     addHotel: async (req, res, next) => {
         const {
-            country_id,
+            countryName,
             title,
             description,
             availability,
@@ -18,8 +18,12 @@ module.exports = {
         } = req.body;
 
         try {
+            // find the country by its name
+            const country = await Country.findOne({ country: countryName });
+            if (!country) return next(new Error('Country not found'));
+
             const newHotel = new Hotel({
-                country_id,
+                country_id: country._id, // use the _id of the country as the country_id
                 title,
                 description,
                 availability,
@@ -100,6 +104,25 @@ module.exports = {
             res.status(200).json(hotel)
         } catch (error) {
             return next(error)
+        }
+    },
+
+    deleteHotel: async (req, res, next) => {
+        try {
+            const hotel = await Hotel.findByIdAndDelete(req.params.id);
+            if (!hotel) return next(new Error('Hotel not found'));
+            res.status(200).json({ status: true });
+        } catch (error) {
+            return next(error);
+        }
+    },
+    editHotel: async (req, res, next) => {
+        try {
+            const updatedHotel = await Hotel.findByIdAndUpdate(req.params.id, req.body, { new: true });
+            if (!updatedHotel) return next(new Error('Hotel not found'));
+            res.status(200).json(updatedHotel);
+        } catch (error) {
+            return next(error);
         }
     },
 
