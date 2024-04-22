@@ -11,7 +11,6 @@ module.exports = {
             rating,
             location,
             price,
-            facilities,
         } = req.body;
 
         try {
@@ -24,7 +23,6 @@ module.exports = {
                 rating,
                 location,
                 price,
-                facilities,
             })
 
             await newHotel.save();
