@@ -16,7 +16,7 @@ module.exports = {
     getUser: async (req, res, next) => {
         const user_id = req.user.id;
         try {
-            const user = await User.findById({ _id: user_id }, { password: 1, __v: 0, createdAt: 0, updatedAt: 0 })
+            const user = await User.findById({ _id: user_id }, { __v: 0, createdAt: 0, updatedAt: 0 })
 
             if (!user) {
                 return res.status(401).json({ status: false, message: "User does not exist" })
