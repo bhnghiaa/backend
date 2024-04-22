@@ -1,9 +1,9 @@
 const Hotel = require('../models/Hotel')
-import Country from '../models/Country'
+
 module.exports = {
     addHotel: async (req, res, next) => {
         const {
-            countryName,
+            country_id,
             title,
             description,
             availability,
@@ -18,12 +18,8 @@ module.exports = {
         } = req.body;
 
         try {
-            // find the country by its name
-            const country = await Country.findOne({ country: countryName });
-            if (!country) return next(new Error('Country not found'));
-
             const newHotel = new Hotel({
-                country_id: country._id, // use the _id of the country as the country_id
+                country_id,
                 title,
                 description,
                 availability,
