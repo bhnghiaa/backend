@@ -33,7 +33,7 @@ module.exports = {
             let query = Place.find({}, '_id review rating imageUrl title country_id location');
 
             if (limitParams !== 'all') {
-                const limit = parseInt(limitParams) || 5;
+                const limit = parseInt(limitParams) || 10000;
                 query = query.limit(limit);
             }
 
