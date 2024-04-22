@@ -20,22 +20,4 @@ const PlaceSchema = new mongoose.Schema({
 
 }, { timestamps: true });
 
-PlaceSchema.post('save', function (doc, next) {
-    const Country = require('./Country'); // import the Country model
-
-    // update the popular field in the Country document
-    Country.updateOne(
-        { $push: { popular: doc.title } },
-        function (err) {
-            if (err) {
-                console.log(err);
-                next(err);
-            } else {
-                next();
-            }
-        }
-    );
-});
-
-
 module.exports = mongoose.model("Place", PlaceSchema);

@@ -20,15 +20,8 @@ module.exports = {
             })
 
             await newPlace.save();
-            const savedPlace = await newPlace.save();
 
-            // update the popular field in the Country document
-            await Country.updateOne(
-                { _id: savedPlace.country_id },
-                { $push: { popular: savedPlace.title } }
-            );
-
-            res.status(201).json(savedPlace);
+            res.status(201).json({ status: true })
         } catch (error) {
             return next(error)
         }
