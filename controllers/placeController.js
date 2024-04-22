@@ -11,12 +11,12 @@ module.exports = {
                 description,
                 imageUrl,
                 location,
-                contact_id,
                 title,
                 rating,
                 review,
                 latitude,
-                longitude
+                longitude,
+                contact_id
             })
 
             await newPlace.save();
