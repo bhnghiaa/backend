@@ -2,7 +2,7 @@ const router = require("express").Router();
 const hotelController = require('../controllers/hotelControllers');
 const { verifyToken } = require("../middleware/jwt_token")
 
-router.post('/', hotelController.addHotel)
+router.post('/', verifyToken, hotelController.addHotel)
 router.get('/', hotelController.getAllHotels)
 router.get('/:id', hotelController.getHotelById)
 router.get('/byCountry/:id', hotelController.getHotelsByCountry)
