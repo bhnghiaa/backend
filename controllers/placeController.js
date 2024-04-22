@@ -30,9 +30,9 @@ module.exports = {
     getPlaces: async (req, res, next) => {
         try {
             const limitParams = req.query.limit;
-            let query =  Place.find({}, '_id review rating imageUrl title country_id location');
+            let query = Place.find({}, '_id review rating imageUrl title country_id location');
 
-            if(limitParams !== 'all'){
+            if (limitParams !== 'all') {
                 const limit = parseInt(limitParams) || 5;
                 query = query.limit(limit);
             }
@@ -48,14 +48,13 @@ module.exports = {
 
     getPlace: async (req, res, next) => {
         const placeId = req.params.id;
-
         try {
 
-            const place = await Place.findById(placeId, {createdAt: 0, updatedAt: 0, __v: 0})
-            .populate({
-                path: 'popular',
-                select: 'title rating review imageUrl location'
-            });
+            const place = await Place.findById(placeId, { createdAt: 0, updatedAt: 0, __v: 0 })
+                .populate({
+                    path: 'popular',
+                    select: 'title rating review imageUrl location'
+                });
 
             res.status(200).json({ place })
 
@@ -68,9 +67,9 @@ module.exports = {
         const countryId = req.params.id;
         try {
 
-            const places = await Place.find({country_id: countryId}, {createdAt: 0, updatedAt: 0, __v: 0})
+            const places = await Place.find({ location: { $regex: countryId, $options: 'i' } }, { createdAt: 0, updatedAt: 0, __v: 0 })
 
-            if(places.length === 0){
+            if (places.length === 0) {
                 return res.status(200).json([])
             }
 
@@ -81,30 +80,30 @@ module.exports = {
         }
     },
 
-   
-    search: async (req, res, next) =>{
-       try {
-        const results = await Place.aggregate(
-            [
-                {
-                  $search: {
-                    index: "places",
-                    text: {
-                      query: req.params.key,
-                      path: {
-                        wildcard: "*"
-                      }
+
+    search: async (req, res, next) => {
+        try {
+            const results = await Place.aggregate(
+                [
+                    {
+                        $search: {
+                            index: "places",
+                            text: {
+                                query: req.params.key,
+                                path: {
+                                    wildcard: "*"
+                                }
+                            }
+                        }
                     }
-                  }
-                }
-              ]
-        )
-        res.status(200).json(results)
-       } catch (error) {
-        return next(error)
-       }
+                ]
+            )
+            res.status(200).json(results)
+        } catch (error) {
+            return next(error)
+        }
     },
 
 
-    
+
 }
