@@ -6,38 +6,24 @@ module.exports = {
         const { country_id, description, imageUrl, location, title, rating, review, latitude, longitude, contact_id } = req.body;
 
         try {
-            // Kiểm tra xem country_id có tồn tại trong database không trước khi tạo Place mới
-            const countryExists = await Country.findById(country_id);
-            if (!countryExists) {
-                return res.status(404).json({ status: false, message: "Country not found" });
-            }
-
-            // Tạo một instance mới của Place với các thông tin được cung cấp
             const newPlace = new Place({
                 country_id,
                 description,
                 imageUrl,
                 location,
+                contact_id,
                 title,
                 rating,
                 review,
                 latitude,
-                longitude,
-                contact_id
-            });
+                longitude
+            })
 
-            // Lưu instance vào database
             await newPlace.save();
 
-            // Tùy chọn: Cập nhật mảng popular của Country nếu muốn
-            countryExists.popular.push(newPlace._id);
-            await countryExists.save();
-
-            // Trả về response thành công
-            res.status(201).json({ status: true, message: "Place added successfully", place: newPlace });
+            res.status(201).json({ status: true })
         } catch (error) {
-            // Gửi lỗi đến middleware xử lý lỗi tiếp theo
-            return next(error);
+            return next(error)
         }
     },
 
@@ -62,6 +48,7 @@ module.exports = {
 
     getPlace: async (req, res, next) => {
         const placeId = req.params.id;
+
         try {
 
             const place = await Place.findById(placeId, { createdAt: 0, updatedAt: 0, __v: 0 })
@@ -81,7 +68,7 @@ module.exports = {
         const countryId = req.params.id;
         try {
 
-            const places = await Place.find({ location: { $regex: countryId, $options: 'i' } }, { createdAt: 0, updatedAt: 0, __v: 0 })
+            const places = await Place.find({ country_id: countryId }, { createdAt: 0, updatedAt: 0, __v: 0 })
 
             if (places.length === 0) {
                 return res.status(200).json([])
