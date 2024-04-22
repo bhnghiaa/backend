@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const PlaceSchema = new mongoose.Schema({
-    country_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Country' },
+    country_id: { type: String, required: true },
     title: { type: String, required: true },
     description: { type: String, required: true },
     contact_id: { type: String, required: true },
@@ -34,5 +34,4 @@ PlaceSchema.post('save', function (doc, next) {
         }
     });
 });
-
 module.exports = mongoose.model("Place", PlaceSchema);
