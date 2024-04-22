@@ -68,7 +68,7 @@ module.exports = {
         const countryId = req.params.id;
         try {
 
-            const places = await Place.find({ country_id: countryId }, { createdAt: 0, updatedAt: 0, __v: 0 })
+            const places = await Place.find({ location: { $regex: countryId, $options: 'i' } }, { createdAt: 0, updatedAt: 0, __v: 0 })
 
             if (places.length === 0) {
                 return res.status(200).json([])
